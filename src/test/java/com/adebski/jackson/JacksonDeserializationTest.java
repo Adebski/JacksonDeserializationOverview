@@ -2,7 +2,6 @@ package com.adebski.jackson;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
@@ -11,26 +10,25 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.stream.Stream;
 
-public class JacksonDeserialisationTest {
+public class JacksonDeserializationTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    public void deserialiseWithPublicFieldsNoArgConstructor() throws IOException {
-        PersonPublicFieldsNoArgConstructor deserialisedValue =
+    public void deserializeWithPublicFieldsNoArgConstructor() throws IOException {
+        PersonPublicFieldsNoArgConstructor deserializedValue =
             objectMapper.readValue(getSamplePersonFileURL(), PersonPublicFieldsNoArgConstructor.class);
 
-        System.out.println(deserialisedValue);
+        System.out.println(deserializedValue);
         PersonPublicFieldsNoArgConstructor expectedValue = new PersonPublicFieldsNoArgConstructor();
         expectedValue.name = "fooName";
         expectedValue.age = 23;
-        Assertions.assertEquals(expectedValue, deserialisedValue);
+        Assertions.assertEquals(expectedValue, deserializedValue);
     }
 
     @Test
-    public void deserialiseWithPrivateFieldsNoArgConstructor() throws IOException {
+    public void deserializeWithPrivateFieldsNoArgConstructor() throws IOException {
         UnrecognizedPropertyException unrecognizedPropertyException = Assertions.assertThrows(
             UnrecognizedPropertyException.class,
             () -> objectMapper.readValue(getSamplePersonFileURL(), PersonPrivateFieldsNoArgConstructor.class)
@@ -44,32 +42,32 @@ public class JacksonDeserialisationTest {
     }
 
     @Test
-    public void deserialiseWithPrivateFieldsNoArgConstructorWithAdditionalConfig() throws IOException {
+    public void deserializeWithPrivateFieldsNoArgConstructorWithAdditionalConfig() throws IOException {
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
-        PersonPrivateFieldsNoArgConstructor deserialisedValue =
+        PersonPrivateFieldsNoArgConstructor deserializedValue =
             objectMapper.readValue(getSamplePersonFileURL(), PersonPrivateFieldsNoArgConstructor.class);
-        System.out.println(deserialisedValue);
-        Assertions.assertEquals(PersonPrivateFieldsNoArgConstructor.getExpectedValue(), deserialisedValue);
+        System.out.println(deserializedValue);
+        Assertions.assertEquals(PersonPrivateFieldsNoArgConstructor.getExpectedValue(), deserializedValue);
     }
 
     @Test
-    public void deserialiseWithPersonPublicFieldsFinalNoArgsConstructorDefaultConfiguration() throws IOException {
-        PersonPublicFieldsFinalNoArgsConstructor deserialisedValue =
+    public void deserializeWithPersonPublicFieldsFinalNoArgsConstructorDefaultConfiguration() throws IOException {
+        PersonPublicFieldsFinalNoArgsConstructor deserializedValue =
             objectMapper.readValue(getSamplePersonFileURL(), PersonPublicFieldsFinalNoArgsConstructor.class);
         PersonPublicFieldsFinalNoArgsConstructor manuallyConstructedValue = new PersonPublicFieldsFinalNoArgsConstructor();
-        System.out.println("Deserialised value: " + deserialisedValue);
+        System.out.println("Deserialized value: " + deserializedValue);
         System.out.println("Manually constructed value: " + manuallyConstructedValue);
 
         Assertions.assertEquals(
             manuallyConstructedValue,
-            deserialisedValue
+            deserializedValue
         );
         System.out.println(
             String.format(
                 "Actual name '%s' actual age '%d'",
-                getNameThroughReflection(deserialisedValue),
-                getAgeThroughReflection(deserialisedValue)
+                getNameThroughReflection(deserializedValue),
+                getAgeThroughReflection(deserializedValue)
             )
         );
         Assertions.assertEquals(
@@ -81,39 +79,39 @@ public class JacksonDeserialisationTest {
             manuallyConstructedValue.getAge()
         );
         Assertions.assertNotEquals(
-            getNameThroughReflection(deserialisedValue),
-            deserialisedValue.getName()
+            getNameThroughReflection(deserializedValue),
+            deserializedValue.getName()
         );
         Assertions.assertNotEquals(
-            getAgeThroughReflection(deserialisedValue),
-            deserialisedValue.getAge()
+            getAgeThroughReflection(deserializedValue),
+            deserializedValue.getAge()
         );
     }
 
     @Test
-    public void deserialiseWithPersonPublicFieldsFinalNoArgsExplicitConstructorDefaultConfiguration() throws IOException {
-        PersonPublicFieldsFinalNoArgsExplicitConstructor deserialisedValue =
+    public void deserializeWithPersonPublicFieldsFinalNoArgsExplicitConstructorDefaultConfiguration() throws IOException {
+        PersonPublicFieldsFinalNoArgsExplicitConstructor deserializedValue =
             objectMapper.readValue(getSamplePersonFileURL(), PersonPublicFieldsFinalNoArgsExplicitConstructor.class);
         PersonPublicFieldsFinalNoArgsExplicitConstructor manuallyConstructedValue = new PersonPublicFieldsFinalNoArgsExplicitConstructor();
-        System.out.println("Deserialised value: " + deserialisedValue);
+        System.out.println("Deserialized value: " + deserializedValue);
         System.out.println("Manually constructed value: " + manuallyConstructedValue);
 
         Assertions.assertNotEquals(
             manuallyConstructedValue,
-            deserialisedValue
+            deserializedValue
         );
         Assertions.assertEquals(
             "fooName",
-            deserialisedValue.name
+            deserializedValue.name
         );
         Assertions.assertEquals(
             23,
-            deserialisedValue.age
+            deserializedValue.age
         );
     }
 
     @Test
-    public void deserialiseWithPersonPublicFieldsFinalNoArgsConstructorDoNotModifyFinalFields() throws IOException {
+    public void deserializeWithPersonPublicFieldsFinalNoArgsConstructorDoNotModifyFinalFields() throws IOException {
         objectMapper.configure(MapperFeature.ALLOW_FINAL_FIELDS_AS_MUTATORS, false);
 
         UnrecognizedPropertyException unrecognizedPropertyException = Assertions.assertThrows(

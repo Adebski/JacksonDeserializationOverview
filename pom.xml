@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.adebski</groupId>
-    <artifactId>ApacheHTTPClientOOM</artifactId>
+    <artifactId>JacksonDeserializationOverview</artifactId>
     <version>1.0</version>
 
     <properties>
